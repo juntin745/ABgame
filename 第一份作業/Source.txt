@@ -1,0 +1,306 @@
+package ABgame;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class Createnumber {
+	private List<Integer> nums =Arrays.asList(0,1,2,3,4,5,6,7,8,9);
+	private int[] answer=new int[4];
+	private int[] guess=new int[4];
+	private int A;
+	private int B;
+	public Createnumber() 
+	{
+	}
+
+	
+	public int getA() {
+		return A;
+	}
+	public void setA(int a) {
+		A = a;
+	}
+	public int getB() {
+		return B;
+	}
+	public void setB(int b) {
+		B = b;
+	}
+	
+	
+	
+	void createanswer(){
+		Collections.shuffle(nums);
+		answer[0]=nums.get(0);
+		answer[1]=nums.get(1);
+		answer[2]=nums.get(2);
+		answer[3]=nums.get(3);
+	}
+		
+	Boolean	noSame(String Guess) 
+	{
+		for (int i = 0; i < Guess.length(); i++) {
+			guess[i] = Guess.charAt(i) - '0';
+			
+		}
+		for(int a=0;a<4;a++) 
+		{
+			for(int b=0;b<4;b++) 
+			{
+				if(a==b)continue;
+				if(guess[a]==guess[b]) 
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+		
+	}	
+	
+	
+
+	
+	void compare(String Guess) 
+	{
+		for (int i = 0; i < Guess.length(); i++) {
+			guess[i] = Guess.charAt(i) - '0';
+			
+		}
+		A=0;
+		B=0;
+			int a=0;
+			int b=0;
+			while(a<4) 
+			{
+				while(b<4) 
+				{
+					if(answer[a]==guess[b]) 
+					{
+						if(a==b) {A++;}
+						else {B++;}
+					}
+					b++;
+				}
+				b=0;
+				a++;
+			}
+			
+		
+	}
+}
+
+
+
+package ABgame;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Exe extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField guess;
+	Createnumber start;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Exe frame = new Exe();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Create the frame.
+	 */
+	public Exe() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 427, 359);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 128));
+		panel.setBounds(15, 15, 387, 44);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		guess = new JTextField();
+		guess.setBounds(136, 10, 89, 25);
+		panel.add(guess);
+		guess.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("你猜的答案");
+		lblNewLabel.setFont(new Font("微軟正黑體", Font.PLAIN, 12));
+		lblNewLabel.setBounds(42, 9, 66, 23);
+		panel.add(lblNewLabel);
+		
+			
+		
+		JPanel down = new JPanel();
+		down.setBackground(new Color(128, 255, 255));
+		down.setBounds(15, 69, 387, 241);
+		contentPane.add(down);
+		down.setLayout(null);
+		
+		
+		
+		JTextArea process = new JTextArea();
+		process.setBounds(15, 10, 282, 221);
+		down.add(process);
+		
+		JLabel lblNewLabel_Date = new JLabel("New label");
+		lblNewLabel_Date.setBounds(15, 0, 282, 15);
+		contentPane.add(lblNewLabel_Date);
+		
+		Timer timer = new Timer(1000, new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		        lblNewLabel_Date.setText(time);
+		    }
+		});
+		
+		timer.start();
+		
+		/*---------------------------------*/
+	
+		
+		JButton play = new JButton("開始");
+		play.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{	
+				
+				start=new Createnumber();
+				start.createanswer();
+				
+				process.setText("請開始輸入猜測的數字"+lblNewLabel_Date.getText()+"\n");
+			
+			
+			}
+		});
+		play.setFont(new Font("新細明體", Font.PLAIN, 11));
+		play.setBounds(309, 16, 57, 15);
+		panel.add(play);
+		
+		JButton ok = new JButton("確定");
+		ok.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				try {
+				if(start.noSame(guess.getText())) {
+					process.append("請四個數字都不同\n");
+				}else {
+				start.compare(guess.getText());
+				
+				if(start.getA()==4) {
+					process.append(guess.getText()+"\n恭喜你，猜對了!"+lblNewLabel_Date.getText()+"\n");
+				}else {
+					process.append(guess.getText()+"\t"+start.getA()+"A"+start.getB()+"B\n");
+				}
+				}
+				}
+				catch(NullPointerException q){
+					
+					process.append("請先點選開始\n");
+				}
+			}
+		});
+		ok.setFont(new Font("新細明體", Font.PLAIN, 11));
+		ok.setBounds(238, 16, 57, 15);
+		panel.add(ok);
+		
+		
+		JButton btnClear = new JButton("重玩");
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					start.createanswer();
+					guess.setText("");
+					process.setText("請開始輸入猜測的數字"+lblNewLabel_Date.getText()+"\n");
+			}
+					catch(NullPointerException q){
+						
+						process.append("請先點選開始\n");
+					}
+			}
+		});
+		btnClear.setBounds(307, 17, 57, 15);
+		down.add(btnClear);
+		btnClear.setFont(new Font("新細明體", Font.PLAIN, 11));
+		
+		JButton print = new JButton("列印");
+		print.setFont(new Font("新細明體", Font.PLAIN, 11));
+		print.setBounds(307, 42, 57, 15);
+		down.add(print);
+		
+		print.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					process.print();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+
+		
+		JButton esc = new JButton("關閉");
+		esc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+		esc.setFont(new Font("新細明體", Font.PLAIN, 11));
+		esc.setBounds(307, 67, 57, 15);
+		down.add(esc);
+		
+		
+		
+		
+		
+		
+
+		
+		
+		
+		
+	}
+}
